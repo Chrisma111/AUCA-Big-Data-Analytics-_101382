@@ -1,0 +1,31 @@
+# Open the shell:   docker exec -it ecom-hbase hbase shell
+# ---------------------------------------------------------------------------
+# 1. SCHEMA  (pre-split user_sessions into 5 regions so a bulk load is spread out)
+create 'user_sessions', {NAME=>'meta',VERSIONS=>1,BLOOMFILTER=>'ROW'}, {NAME=>'device',VERSIONS=>1}, {NAME=>'geo',VERSIONS=>1}, {NAME=>'pv',VERSIONS=>1}, {NAME=>'cart',VERSIONS=>1}, {SPLITS=>['user_002000','user_004000','user_006000','user_008000']}
+create 'product_daily_metrics', {NAME=>'m',VERSIONS=>1,BLOOMFILTER=>'ROW'}
+list
+describe 'user_sessions'
+
+# 2. SAMPLE WRITES (row key = user#reverse_ts#session ; reverse_ts = 9999999999999 - epoch_ms)
+put 'user_sessions','user_000042#8221234567890#sess_a7b3c9d8e2','meta:duration','919'
+put 'user_sessions','user_000042#8221234567890#sess_a7b3c9d8e2','meta:referrer','search_engine'
+put 'user_sessions','user_000042#8221234567890#sess_a7b3c9d8e2','pv:000','2026-10-05T14:37:22|home|||42'
+put 'user_sessions','user_000042#8221234567890#sess_a7b3c9d8e2','cart:prod_00123','2|129.99'
+
+# 3. QUERIES
+# all sessions of one user (prefix scan) - newest first
+scan 'user_sessions', {ROWPREFIXFILTER=>'user_000042#'}
+# last 5 sessions of the user
+scan 'user_sessions', {ROWPREFIXFILTER=>'user_000042#', LIMIT=>5}
+# only some columns (column-family pruning)
+scan 'user_sessions', {ROWPREFIXFILTER=>'user_000042#', COLUMNS=>['meta:duration','meta:referrer'], LIMIT=>5}
+# time window for a user (start/stop rows computed from reverse timestamps)
+scan 'user_sessions', {STARTROW=>'user_000042#8221000000000', STOPROW=>'user_000042#8222000000000'}
+# one session
+get 'user_sessions','user_000042#8221234567890#sess_a7b3c9d8e2'
+# product trend for a date range
+scan 'product_daily_metrics', {STARTROW=>'prod_00123#20261001', STOPROW=>'prod_00123#20261109'}
+# atomic counter (streaming-style update)
+incr 'product_daily_metrics','prod_00123#20261108','m:views',1
+get_counter 'product_daily_metrics','prod_00123#20261108','m:views'
+count 'user_sessions', INTERVAL=>50000

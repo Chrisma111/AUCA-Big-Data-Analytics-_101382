@@ -1,0 +1,24 @@
+# docker compose up -d        (start)      docker compose down        (stop, data kept in volumes)
+services:
+  mongo:
+    image: mongo:7
+    container_name: ecom-mongo
+    ports: ["27017:27017"]
+    volumes: ["mongo_data:/data/db"]
+
+  hbase:
+    # Single-node HBase with ZooKeeper + REST + THRIFT server (port 9090 is what happybase uses).
+    image: harisekhon/hbase:2.1
+    container_name: ecom-hbase
+    platform: linux/amd64          # needed on Apple-silicon Macs (runs under emulation, slower)
+    hostname: hbase
+    ports:
+      - "9090:9090"     # Thrift  (Python client)
+      - "16010:16010"   # HBase master web UI  -> http://localhost:16010
+      - "8080:8080"     # REST
+      - "2181:2181"     # ZooKeeper
+    volumes: ["hbase_data:/hbase-data"]
+
+volumes:
+  mongo_data:
+  hbase_data:

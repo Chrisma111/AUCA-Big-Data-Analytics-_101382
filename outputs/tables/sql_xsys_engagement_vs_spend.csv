@@ -1,0 +1,4 @@
+engagement,users,avg_sessions,avg_minutes_browsing,avg_orders,avg_spend,pct_buyers
+1 - low engagement,3334,15.2,458.9,4.41,4933.48,99.1
+2 - medium,3333,19.9,601.0,4.97,5359.42,99.4
+3 - high engagement,3333,24.9,754.1,5.62,5885.34,99.8

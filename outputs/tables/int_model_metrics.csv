@@ -1,0 +1,4 @@
+model,rmse,mae,r2
+Baseline (run-rate: spend_60 / 2),2053.77,1608.396,-0.544
+Linear regression,1654.522,1317.069,-0.002
+Random forest (100 trees),1656.008,1317.151,-0.004

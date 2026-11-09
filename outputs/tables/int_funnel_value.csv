@@ -1,0 +1,7 @@
+metric,value
+Cart value of purchased sessions,19986282
+Cart value abandoned (never 'converted'),71950644
+"Cart value of failed checkouts (looked converted, no order)",12312826
+Sessions flagged 'converted' by the platform,40609
+Sessions with a real order,25094
+Platform over-reports conversions by,62%

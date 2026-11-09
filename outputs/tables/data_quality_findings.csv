@@ -1,0 +1,13 @@
+topic,value,impact_on_design
+products have subcategory_id?,False,"Assignment text shows it, generator does not create it -> margin only at CATEGORY level (avg of subcategory margins)"
+users have age / birth date?,False,"No age -> 'users by age group' impossible; segment by purchase frequency, registration cohort and geography instead"
+conversion_status counts,"{'browsed': 69830, 'converted': 40609, 'abandoned': 89561}",browsed / abandoned / converted
+'converted' sessions WITHOUT a transaction,"15,515 of 40,609 (38%)",conversion_status is NOT reliable (stock failures) -> true purchases are taken from transactions
+transactions WITHOUT a session,"24,906 of 50,000",Roughly half the orders cannot be joined to browsing -> funnel must treat them separately
+transactions where subtotal - discount != total,0,0 expected -> totals can be trusted
+duplicate session ids,0,0 expected
+sessions with empty viewed_products,2578,kept; they simply never reach a product page
+inactive products,234,~5% by design
+products with zero stock at the end,163,inventory chain works
+session time range,2026-08-11 -> 2026-11-09,dates are relative to the day you generate the data (not fixed 2025 dates)
+user registration range,2026-02-12 -> 2026-08-11,"all users registered BEFORE the activity window -> cohort analysis is by registration month, 3-9 months of tenure"

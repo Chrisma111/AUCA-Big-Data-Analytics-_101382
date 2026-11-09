@@ -1,0 +1,11 @@
+table,check,violations,of_rows,action,pct
+users,rows dropped by cleaning (null key / duplicate),0,10000,removed,0.0
+products,rows dropped by cleaning,0,5000,removed,0.0
+transactions,rows dropped by cleaning (null key / duplicate),0,50000,removed,0.0
+transactions,total != subtotal - discount,0,50000,flagged + excluded,0.0
+transactions,subtotal != sum(line items),0,50000,flagged + excluded,0.0
+transactions,no linked session (session_id is null),24906,50000,"kept, flagged has_session=false",49.81
+sessions,rows dropped by cleaning (null key / duplicate / duration<=0),0,200000,removed,0.0
+sessions,conversion_status='converted' but NO transaction,15515,40609,reconciled -> is_purchased,38.21
+sessions,has transaction but status != converted,0,200000,reconciled -> is_purchased,0.0
+sessions,cart without product-detail view,0,200000,none expected,0.0
